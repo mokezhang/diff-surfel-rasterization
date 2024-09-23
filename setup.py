@@ -14,6 +14,9 @@ from torch.utils.cpp_extension import CUDAExtension, BuildExtension
 import os
 os.path.dirname(os.path.abspath(__file__))
 
+# Set default NVCC_FLAGS if not already set
+nvcc_flags = os.environ.get("NVCC_FLAGS", "-allow-unsupported-compiler").split()
+
 setup(
     name="diff_surfel_rasterization",
     packages=['diff_surfel_rasterization'],
@@ -27,7 +30,7 @@ setup(
             "cuda_rasterizer/backward.cu",
             "rasterize_points.cu",
             "ext.cpp"],
-            extra_compile_args={"nvcc": ["-I" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party/glm/")]})
+            extra_compile_args={"nvcc": nvcc_flags + ["-I" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "third_party/glm/")]})
         ],
     cmdclass={
         'build_ext': BuildExtension
